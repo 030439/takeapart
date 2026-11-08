@@ -14,9 +14,59 @@
           "description": "Text you have verified, shown when this part is selected.",
           "purpose": "Why the part exists.",
           "function": "What it does.",
-          "related": ["Gear_1", "Bearing_A"]
+          "related": [
+            "Gear_1",
+            "Bearing_A"
+          ]
         }
-      }
+      },
+      "overview": "Short, verified overview of the model.",
+      "sources": [
+        "Where the descriptions came from (book, paper, manufacturer manual)."
+      ],
+      "tutorials": [
+        {
+          "id": "gearbox-basics",
+          "title": "Gearbox basics",
+          "summary": "One line shown in the tutorial list.",
+          "steps": [
+            {
+              "id": "intro",
+              "title": "Overview",
+              "text": "Plain text shown to the learner.",
+              "action": {
+                "type": "read"
+              }
+            },
+            {
+              "id": "find-shaft",
+              "title": "Find the input shaft",
+              "text": "Select the input shaft.",
+              "action": {
+                "type": "select",
+                "component": "Input_Shaft"
+              }
+            },
+            {
+              "id": "explode",
+              "title": "Pull it apart",
+              "text": "Raise the Explode slider to 50% or more.",
+              "action": {
+                "type": "explode",
+                "min": 0.5
+              }
+            },
+            {
+              "id": "assemble",
+              "title": "Reassemble",
+              "text": "Press Assemble.",
+              "action": {
+                "type": "assemble"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

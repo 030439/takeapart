@@ -24,6 +24,24 @@ export const MODEL_CATALOG: ProceduralModelMeta[] = [
     source: 'procedural',
     isPlaceholder: true,
     explode: { axis: 'y', distance: 1.2 },
+    overview: 'A demonstration object. Its parts are plain shapes with generic labels and say nothing about how a real engine works.',
+    tutorials: [
+      {
+        id: 'piston-walkthrough',
+        title: 'Explore the piston demo',
+        summary: 'The select, explode, inspect and reassemble flow, on a demo object.',
+        requiresComponents: true,
+        needsCamera: false,
+        steps: [
+          { id: 'intro', title: 'About this demo', text: 'These parts are simple shapes standing in for an engine. Real engines get their descriptions from curated model metadata.', action: { type: 'read' } },
+          { id: 'explode', title: 'Pull it apart', text: 'Drag the Explode slider to at least 75%.', action: { type: 'explode', min: 0.75 } },
+          { id: 'piston', title: 'Select the piston', text: 'Select the part named Piston.', action: { type: 'select', component: 'piston' } },
+          { id: 'inspect', title: 'Inspect its details', text: 'Read the Selected component panel. For this demo it shows only a generic label.', action: { type: 'read' } },
+          { id: 'crank', title: 'Locate the crank pin', text: 'Select the part named Crank pin.', action: { type: 'select', component: 'crank' } },
+          { id: 'assemble', title: 'Reassemble', text: 'Press Assemble to put everything back.', action: { type: 'assemble' } },
+        ],
+      },
+    ],
     components: [
       { id: 'block', name: 'Block', description: 'Translucent box standing in for a cylinder block in this demo.', geometry: { kind: 'box', args: [1.2, 1.6, 1.2] }, position: [0, 0.5, 0], color: '#64748b', opacity: 0.35 },
       { id: 'piston', name: 'Piston', description: 'Cylinder standing in for a piston in this demo.', parentId: 'block', geometry: { kind: 'cylinder', args: [0.45, 0.45, 0.4, 24] }, position: [0, 0.9, 0], color: '#10b981' },

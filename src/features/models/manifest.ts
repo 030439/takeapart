@@ -1,4 +1,5 @@
 import type { Category, CuratedInfo, ExplodeConfig, GlbModelMeta } from '../../types/model';
+import { parseTutorials } from '../learning/tutorial';
 
 export const MODEL_BASE = '/models/';
 export const THUMB_BASE = '/thumbnails/';
@@ -69,11 +70,16 @@ export function parseManifest(json: unknown, reservedIds: Iterable<string> = [])
     if (e.thumbnail !== undefined && !isSafeRelativePath(e.thumbnail, /\.(png|jpe?g|webp|svg)$/i)) { errors.push(`${where}: invalid "thumbnail" path`); return; }
     const explode = parseExplode(e.explode);
     if (explode === null) { errors.push(`${where}: "explode" must be {distance?: 0..10, axis?: radial|x|y|z}`); return; }
+    if (e.overview !== undefined && !(isStr(e.overview) && e.overview.length <= 2000)) { errors.push(`${where}: "overview" must be text (max 2000 characters)`); return; }
+    if (e.sources !== undefined && !(Array.isArray(e.sources) && e.sources.length <= 20 && e.sources.every((x) => isStr(x) && x.length <= 300))) { errors.push(`${where}: "sources" must be a list of short text entries`); return; }
+    const tut = e.tutorials === undefined ? undefined : parseTutorials(e.tutorials, `${where}.tutorials`);
+    if (tut) errors.push(...tut.errors); // an invalid tutorial is dropped; the model still loads
     seen.add(e.id);
     models.push({
       id: e.id, name: e.name, category: e.category as Category, description: e.description,
       isPlaceholder: e.placeholder === true, source: 'glb', filePath: e.file,
       thumbnail: e.thumbnail as string | undefined, curated: parseCurated(e.components, errors, where), explode,
+      overview: e.overview as string | undefined, sources: e.sources as string[] | undefined, tutorials: tut?.tutorials,
     });
   });
   return { models, errors };

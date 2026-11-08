@@ -18,6 +18,7 @@ function Geometry({ g }: { g: PartGeometry }) {
 function Part({ part, handle }: { part: ComponentMeta; handle: ModelHandle }) {
   const selected = useWorkspaceStore((s) => s.selectedComponentId === part.id);
   const handHover = useWorkspaceStore((s) => s.hoveredComponentId === part.id);
+  const guide = useWorkspaceStore((s) => s.guideComponentId === part.id);
   const labels = useWorkspaceStore((s) => s.labelsVisible);
   const select = useWorkspaceStore((s) => s.selectComponent);
   const [hover, setHover] = useState(false);
@@ -39,8 +40,8 @@ function Part({ part, handle }: { part: ComponentMeta; handle: ModelHandle }) {
         roughness={0.5}
         transparent={part.opacity !== undefined}
         opacity={part.opacity ?? 1}
-        emissive={active ? '#10b981' : '#000000'}
-        emissiveIntensity={selected ? 0.6 : 0.25}
+        emissive={active ? '#10b981' : guide ? '#38bdf8' : '#000000'}
+        emissiveIntensity={selected ? 0.6 : guide ? 0.5 : 0.25}
       />
       {labels && selected && (
         <Html center distanceFactor={8} style={{ pointerEvents: 'none' }}>

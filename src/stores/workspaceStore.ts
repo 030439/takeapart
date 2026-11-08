@@ -12,6 +12,9 @@ interface WorkspaceState {
   labelsVisible: boolean;
   selectedComponentId: string | null;
   hoveredComponentId: string | null;
+  /** Part a tutorial step is asking the learner to find. */
+  guideComponentId: string | null;
+  setGuide: (id: string | null) => void;
   /** Requested explosion amount, 0..1. The 3D layer animates towards it. */
   explodeTarget: number;
   /** Incremented to ask the 3D layer to run the assemble animation. */
@@ -35,6 +38,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   labelsVisible: true,
   selectedComponentId: null,
   hoveredComponentId: null,
+  guideComponentId: null,
+  setGuide: (guideComponentId) => set({ guideComponentId }),
   explodeTarget: 0,
   resetNonce: 0,
   paused: false,

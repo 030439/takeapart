@@ -6,6 +6,7 @@ import { InteractionPanel } from '@/features/workspace/InteractionPanel';
 import { useCatalogStore } from '@/stores/catalogStore';
 import { useLibraryStore } from '@/stores/libraryStore';
 import { useGestureRuntime } from '@/features/gestures/useGestureRuntime';
+import { useLearningEvents } from '@/features/learning/useLearningEvents';
 
 export function App() {
   const id = useLibraryStore((s) => s.selectedModelId);
@@ -13,6 +14,7 @@ export function App() {
   const model = models.find((m) => m.id === id) ?? models[0];
   useEffect(() => { void useCatalogStore.getState().load(); }, []);
   useGestureRuntime();
+  useLearningEvents();
   const [left, setLeft] = useState(false);
   const [right, setRight] = useState(false);
 

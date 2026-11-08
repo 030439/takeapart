@@ -1,6 +1,6 @@
 # TakeApart
 
-Hand-gesture controlled 3D exploration platform. Status: **Phase 7 (GPU particles)**.
+Hand-gesture controlled 3D exploration platform. Status: **Phase 8 (learning mode)**.
 
 ## Run
 ```bash
@@ -94,8 +94,19 @@ GPU particle engine in `src/features/particle-engine`:
 - The component explosion (slider, `E`, two-hand control) is unchanged but is disabled while particles are shown.
 - Not done: automatic particle-count reduction under load (Phase 9), skinned or morph-target models are sampled in bind pose.
 
+## Phase 8 contents
+Learning mode, in `src/features/learning`:
+- **Component details:** name, description, purpose, function, parent assembly, and related components (clickable when the related part exists in the model). Text shows only where the model's metadata supplies it; otherwise the panel says "No curated description", and node names are never turned into descriptions.
+- **Model overview and sources:** optional `overview` and `sources` in the manifest, displayed with a Sources list so content can be checked.
+- **Tutorials:** step-by-step, each step has a completion condition the app can verify: `read` (press Next), `select` (a named part, or any), `explode` (at least a given amount), `assemble`, `particles`, `reconstruct`, `hand` (pinch, point, palm, fist). Progress bar, "Step n of m", per-step done indicator, Back, Skip, Exit, and a completion screen. Progress is saved in localStorage so tutorials can be resumed; list badges show Not started, n/m steps, or Completed.
+- **Guidance:** a select step highlights the target part in sky blue in the viewport and ringed in the hierarchy. A step naming a component the model lacks says so and can be skipped.
+- **Authoring:** add `"tutorials": [...]` to a model's manifest entry (see `public/models/manifest.example.json`). Invalid tutorials are dropped and listed under "manifest problems" without blocking the model. Components are referenced by node name, the same key as curated metadata.
+- **Included tutorials:** three built-in ones about using the app (getting started, particles, hand control), plus a walkthrough for the piston demo and one for the sample GLB. None contains subject-matter facts. The demo text says so.
+- **Not included:** real anatomy, engine or machine lessons. Your spec asks for chamber, valve, piston, crankshaft and gearbox content to come from verified metadata, so those have to be written by someone who can verify them, then added to each model's manifest entry.
+- Hand-gesture steps can only be completed with the camera on; they can be skipped.
+
 ## Not yet implemented
-learning mode (8), optimisation (9).
+optimisation (9).
 Explode, assemble and particle buttons are deliberately absent until their phases exist.
 shadcn/ui is not installed yet (its CLI needs network); add it when first needed.
 

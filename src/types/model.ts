@@ -1,3 +1,5 @@
+import type { Tutorial } from './learning';
+
 export type Category = 'anatomy' | 'engines' | 'machines';
 
 export type PartGeometry =
@@ -32,6 +34,10 @@ interface ModelBase {
   /** True for demonstration or test objects that are NOT real anatomical/mechanical models. */
   isPlaceholder: boolean;
   explode?: ExplodeConfig;
+  /** Curated overview and where it came from. Shown only when supplied. */
+  overview?: string;
+  sources?: string[];
+  tutorials?: Tutorial[];
 }
 
 /** Built in code. Always placeholders. */

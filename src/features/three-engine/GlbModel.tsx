@@ -27,6 +27,7 @@ export function GlbModel({ loaded, handle }: { loaded: LoadedModel; handle: Mode
   const supports = loaded.validation.supportsComponents;
   const selected = useWorkspaceStore((s) => s.selectedComponentId);
   const hovered = useWorkspaceStore((s) => s.hoveredComponentId);
+  const guide = useWorkspaceStore((s) => s.guideComponentId);
   const labels = useWorkspaceStore((s) => s.labelsVisible);
   const select = useWorkspaceStore((s) => s.selectComponent);
   const setHovered = useWorkspaceStore((s) => s.setHovered);
@@ -45,12 +46,13 @@ export function GlbModel({ loaded, handle }: { loaded: LoadedModel; handle: Mode
     if (!supports) return;
     loaded.meshes.forEach((mesh, id) => {
       const on = id === selected || id === hovered;
+      const guided = id === guide && !on;
       forEachMaterial(mesh, (mat) => {
         const m = mat as MeshStandardMaterial;
         if (!m.emissive) return;
-        if (on) {
-          m.emissive.set('#10b981');
-          m.emissiveIntensity = id === selected ? 0.6 : 0.25;
+        if (on || guided) {
+          m.emissive.set(on ? '#10b981' : '#38bdf8');
+          m.emissiveIntensity = id === selected ? 0.6 : guided ? 0.5 : 0.25;
         } else {
           const base = mat.userData.baseEmissive as Color | undefined;
           if (base) m.emissive.copy(base);
@@ -59,7 +61,7 @@ export function GlbModel({ loaded, handle }: { loaded: LoadedModel; handle: Mode
         }
       });
     });
-  }, [loaded, supports, selected, hovered]);
+  }, [loaded, supports, selected, hovered, guide]);
 
   const partId = (e: ThreeEvent<MouseEvent | PointerEvent>) => e.object.userData.partId as string | undefined;
   const selectedMesh = selected ? loaded.meshes.get(selected) : undefined;
