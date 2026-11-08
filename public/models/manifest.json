@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "id": "sample-multipart",
+      "name": "Multi-part Sample (test asset)",
+      "category": "machines",
+      "description": "Test GLB: four boxes in two assemblies. Exercises the loader and hierarchy. Not a real machine.",
+      "file": "samples/multipart-sample.glb",
+      "placeholder": true,
+      "components": {
+        "Column": { "name": "Column (test box)", "description": "A box used to test curated metadata. It is not a real component." }
+      }
+    }
+  ]
+}
