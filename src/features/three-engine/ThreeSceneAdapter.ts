@@ -1,5 +1,6 @@
 import { Plane, Quaternion, Raycaster, Vector2, Vector3, type Camera, type Material, type Mesh } from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { useParticleStore } from '@/stores/particleStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { PoseController } from '../explode-engine/PoseController';
 import type { Vec3 } from '../gestures/types';
@@ -26,6 +27,8 @@ export class ThreeSceneAdapter implements SceneAdapter {
   ) {}
 
   pick(ndc: Ndc): string | null {
+    // Hidden meshes can still be raycast, so parts are not pickable while particles stand in for the model.
+    if (useParticleStore.getState().state !== 'solid') return null;
     this.ray.setFromCamera(new Vector2(ndc.x, ndc.y), this.camera);
     const hits = this.ray.intersectObjects([...this.handle.parts.values()], false);
     if (hits.length === 0) return null;
@@ -93,6 +96,8 @@ export class ThreeSceneAdapter implements SceneAdapter {
   hover(id: string | null): void { useWorkspaceStore.getState().setHovered(id); }
   getExplode(): number { return useWorkspaceStore.getState().explodeTarget; }
   setExplode(v: number): void { useWorkspaceStore.getState().setExplode(v); }
+
+  fist(): void { useParticleStore.getState().handFist(); }
 
   /** Assemble: the store resets the explosion and bumps a counter that HandInteraction turns into the animation. */
   resetPose(): void { useWorkspaceStore.getState().assemble(); }

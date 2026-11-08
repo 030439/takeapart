@@ -32,6 +32,15 @@ export class PoseSimulation {
   /** Animate everything back to the original pose: explosion, manual moves, scales. */
   assemble(): void { this.explodeTarget = 0; this.assembling = true; }
 
+  /** Jump straight to the assembled pose with no animation (used just before particles reconstruct the model). */
+  snapAssembled(): void {
+    this.explodeTarget = 0;
+    this.explodeCurrent = 0;
+    this.assembling = false;
+    for (const p of this.parts.values()) { p.manual = [0, 0, 0]; p.scale = 1; }
+    this.dirty = true;
+  }
+
   /** Any direct manipulation stops an assemble animation in progress. */
   cancelAssemble(): void { this.assembling = false; }
 

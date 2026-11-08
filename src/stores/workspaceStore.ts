@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { nextLevel } from '@/features/explode-engine/explosionVectors';
 import { useModelRuntime } from './modelRuntimeStore';
+import { useParticleStore } from './particleStore';
 
-/** Explosion only makes sense for models with separate components. */
-const canExplode = () => useModelRuntime.getState().validation?.supportsComponents === true;
+/** Explosion needs separate components, and a visible solid model (not particles). */
+const canExplode = () =>
+  useModelRuntime.getState().validation?.supportsComponents === true && useParticleStore.getState().state === 'solid';
 
 interface WorkspaceState {
   gridVisible: boolean;
@@ -14,6 +16,9 @@ interface WorkspaceState {
   explodeTarget: number;
   /** Incremented to ask the 3D layer to run the assemble animation. */
   resetNonce: number;
+  /** Space pauses pose and particle animation. */
+  paused: boolean;
+  togglePaused: () => void;
   toggleGrid: () => void;
   toggleLabels: () => void;
   selectComponent: (id: string | null) => void;
@@ -32,6 +37,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   hoveredComponentId: null,
   explodeTarget: 0,
   resetNonce: 0,
+  paused: false,
+  togglePaused: () => set((s) => ({ paused: !s.paused })),
   toggleGrid: () => set((s) => ({ gridVisible: !s.gridVisible })),
   toggleLabels: () => set((s) => ({ labelsVisible: !s.labelsVisible })),
   selectComponent: (selectedComponentId) => set({ selectedComponentId }),
@@ -39,5 +46,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setExplode: (v) => { if (canExplode()) set({ explodeTarget: Math.min(1, Math.max(0, v)) }); },
   stepExplode: (dir) => { if (canExplode()) set((s) => ({ explodeTarget: nextLevel(s.explodeTarget, dir) })); },
   resetExplode: () => set({ explodeTarget: 0 }),
-  assemble: () => set((s) => ({ explodeTarget: 0, resetNonce: s.resetNonce + 1 })),
+  assemble: () => {
+    set((s) => ({ explodeTarget: 0, resetNonce: s.resetNonce + 1 }));
+    useParticleStore.getState().reconstructIfParticles();
+  },
 }));

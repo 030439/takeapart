@@ -141,6 +141,19 @@ describe('PoseSimulation', () => {
     expect(t.position('a')).toEqual(before);
   });
 
+  it('snapAssembled returns to the original pose instantly', () => {
+    const s = sim();
+    s.setExplodeTarget(1);
+    run(s, () => s.explodeCurrent === 1);
+    s.setLocalPosition('a', [9, 9, 9]);
+    s.scalePart('a', 2);
+    s.snapAssembled();
+    expect(s.position('a')).toEqual([1, 0, 0]);
+    expect(s.scaleOf('a')).toBe(1);
+    expect(s.explodeCurrent).toBe(0);
+    expect(s.assembling).toBe(false);
+  });
+
   it('ignores unknown part ids', () => {
     const s = sim();
     s.setLocalPosition('nope', [1, 1, 1]);

@@ -74,6 +74,7 @@ function mockAdapter(opts: { pick?: string | null; partPos?: Vec3; selected?: st
     hover: (id) => rec('hover', id),
     getExplode: () => explode,
     setExplode: (v) => { explode = v; rec('explode', v); },
+    fist: () => rec('fist'),
     resetPose: () => rec('reset'),
   };
   return { adapter, calls, of: (fn: string) => calls.filter((c) => c.fn === fn) };
@@ -196,11 +197,12 @@ describe('InteractionEngine: two hands', () => {
 describe('InteractionEngine: explode and assemble', () => {
   const cmd = (type: 'explode' | 'assemble') => [{ type, hand: 'Right' as const, position: { x: 0, y: 0, z: 0 }, timestamp: 0 }];
 
-  it('a fist command explodes fully', () => {
+  it('a fist command triggers the fist action (particles), not the component explosion', () => {
     const m = mockAdapter();
     const e = new InteractionEngine(m.adapter, cfg);
     e.process(frame({ Right: { gesture: 'FIST', at: [0, 0] } }, [], cmd('explode')));
-    expect(m.of('explode').at(-1)!.args[0]).toBe(1);
+    expect(m.of('fist')).toHaveLength(1);
+    expect(m.of('explode')).toHaveLength(0);
   });
 
   it('delays point selection so two-hand control can claim the gesture first', () => {

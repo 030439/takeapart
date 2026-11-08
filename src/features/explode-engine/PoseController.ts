@@ -32,6 +32,11 @@ export class PoseController {
     mesh.scale.copy(base.scale).multiplyScalar(this.sim.scaleOf(id));
   }
 
+  snapAssembled(): void {
+    this.sim.snapAssembled();
+    for (const id of this.sim.ids()) this.applyOne(id);
+  }
+
   /** Call every frame. */
   tick(dt: number): void {
     if (this.handle.version !== this.built) this.rebuild();

@@ -6,6 +6,7 @@ import type { ModelMeta } from '@/types/model';
 import { ProceduralModel } from '@/features/three-engine/ProceduralModel';
 import { HandInteraction } from '@/features/three-engine/HandInteraction';
 import { GlbModel } from '@/features/three-engine/GlbModel';
+import { ParticleLayer } from '@/features/particle-engine/ParticleLayer';
 import type { LoadedModel } from '@/features/models/ModelLoader';
 import { ModelHandle } from '@/features/three-engine/ModelHandle';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
@@ -53,6 +54,7 @@ export function Viewport({ model, loaded, actions }: { model: ModelMeta; loaded:
       <OrbitControls makeDefault enableDamping minDistance={1.5} maxDistance={14} />
       <ActionBridge actions={actions} />
       <HandInteraction handle={handle} explode={model.explode} />
+      <ParticleLayer handle={handle} modelKey={model.source === 'procedural' ? model.id : (loaded?.id ?? null)} />
     </Canvas>
   );
 }

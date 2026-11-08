@@ -25,6 +25,8 @@ export interface SceneAdapter {
   /** Current explosion target, 0..1. */
   getExplode(): number;
   setExplode(v: number): void;
+  /** Fist: dissolve the model into particles, or burst particles that already exist. */
+  fist(): void;
   /** Assemble: restore the original pose (explosion, moved parts, scales, rotation). */
   resetPose(): void;
 }
@@ -70,7 +72,7 @@ const otherOf = (h: Handedness): Handedness => (h === 'Left' ? 'Right' : 'Left')
  * Turns gesture frames into scene manipulation:
  * pinch on a part drags it (grab offset preserved), pinch on empty space rotates the model,
  * point inspects and selects, two pinching hands zoom/scale and twist, two pointing hands set the explosion
- * amount by their spread, fist explodes fully, open palm assembles.
+ * amount by their spread, fist turns the model into particles (or bursts them), open palm assembles.
  */
 export class InteractionEngine {
   private ctl: Record<Handedness, HandCtl> = { Left: { mode: 'idle' }, Right: { mode: 'idle' } };
@@ -120,7 +122,7 @@ export class InteractionEngine {
     }
     for (const c of frame.commands) {
       if (c.type === 'assemble') a.resetPose();
-      else if (c.type === 'explode') a.setExplode(1);
+      else if (c.type === 'explode') a.fist();
     }
 
     if (this.twoActive) {

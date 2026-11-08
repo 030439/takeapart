@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { HandTrackingPanel } from '@/features/hand-tracking/HandTrackingPanel';
 import { GesturePanel } from '@/features/gestures/GesturePanel';
 import { HandControlPanel } from './HandControlPanel';
+import { ParticlePanel } from '@/features/particle-engine/ParticlePanel';
 import type { ComponentInfo, ModelMeta } from '@/types/model';
 import { useModelRuntime } from '@/stores/modelRuntimeStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
@@ -53,6 +54,7 @@ export function InteractionPanel({ model }: { model: ModelMeta }) {
       <HandTrackingPanel />
       <GesturePanel />
       <HandControlPanel />
+      <ParticlePanel />
       <Section title="Model">
         <p className="text-sm">{model.name}</p>
         <p className="mt-1 text-xs text-mute">{model.description}</p>

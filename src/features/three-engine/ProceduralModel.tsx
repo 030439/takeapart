@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { Html } from '@react-three/drei';
 import type { Mesh } from 'three';
 import type { ComponentMeta, PartGeometry, ProceduralModelMeta } from '@/types/model';
+import { useParticleStore } from '@/stores/particleStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ModelHandle } from './ModelHandle';
 
@@ -27,8 +28,8 @@ function Part({ part, handle }: { part: ComponentMeta; handle: ModelHandle }) {
       ref={register}
       position={part.position}
       rotation={part.rotation}
-      onClick={(e) => { e.stopPropagation(); select(part.id); }}
-      onPointerOver={(e) => { e.stopPropagation(); setHover(true); }}
+      onClick={(e) => { if (useParticleStore.getState().state !== 'solid') return; e.stopPropagation(); select(part.id); }}
+      onPointerOver={(e) => { if (useParticleStore.getState().state !== 'solid') return; e.stopPropagation(); setHover(true); }}
       onPointerOut={() => setHover(false)}
     >
       <Geometry g={part.geometry} />

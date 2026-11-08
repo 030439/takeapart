@@ -5,6 +5,7 @@ import { Vector3, type Color, type Mesh, type MeshStandardMaterial } from 'three
 import type { LoadedModel } from '@/features/models/ModelLoader';
 import { forEachMaterial } from '@/features/models/modelUtils';
 import { useModelRuntime } from '@/stores/modelRuntimeStore';
+import { useParticleStore } from '@/stores/particleStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ModelHandle } from './ModelHandle';
 
@@ -67,8 +68,8 @@ export function GlbModel({ loaded, handle }: { loaded: LoadedModel; handle: Mode
     <group ref={(g) => { handle.group = g; }}>
       <primitive
         object={loaded.root}
-        onClick={(e: ThreeEvent<MouseEvent>) => { const id = partId(e); if (supports && id) { e.stopPropagation(); select(id); } }}
-        onPointerOver={(e: ThreeEvent<PointerEvent>) => { const id = partId(e); if (supports && id) { e.stopPropagation(); setHovered(id); } }}
+        onClick={(e: ThreeEvent<MouseEvent>) => { const id = partId(e); if (supports && id && useParticleStore.getState().state === 'solid') { e.stopPropagation(); select(id); } }}
+        onPointerOver={(e: ThreeEvent<PointerEvent>) => { const id = partId(e); if (supports && id && useParticleStore.getState().state === 'solid') { e.stopPropagation(); setHovered(id); } }}
         onPointerOut={() => { if (supports) setHovered(null); }}
       />
       {labels && supports && selectedMesh && selectedName && <PartLabel mesh={selectedMesh} text={selectedName} />}

@@ -33,6 +33,11 @@ export function HandInteraction({ handle, explode }: { handle: ModelHandle; expl
   }, [pose]);
 
   useEffect(() => {
+    handle.snapAssembled = () => pose.snapAssembled();
+    return () => { handle.snapAssembled = undefined; };
+  }, [handle, pose]);
+
+  useEffect(() => {
     if (nonce !== handledNonce.current) { handledNonce.current = nonce; pose.sim.assemble(); }
   }, [nonce, pose]);
 
@@ -55,7 +60,7 @@ export function HandInteraction({ handle, explode }: { handle: ModelHandle; expl
     };
   }, [engine]);
 
-  useFrame((_, dt) => pose.tick(Math.min(dt, 0.1)));
+  useFrame((_, dt) => pose.tick(useWorkspaceStore.getState().paused ? 0 : Math.min(dt, 0.1)));
   return null;
 }
 

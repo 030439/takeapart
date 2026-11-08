@@ -37,7 +37,8 @@ export function HandControlPanel() {
           <li>Point at a part to highlight and select it.</li>
           <li>Pinch with both hands: spread to zoom (or scale the selected part), twist to rotate.</li>
           <li>Point with both hands and spread or close them to set the explosion amount.</li>
-          <li>Hold a fist (or press E) to explode; hold an open palm (or press A) to assemble.</li>
+          <li>Hold a fist to turn the model into particles (a second fist bursts them). Hold an open palm, or press A, to assemble.</li>
+          <li>Press E to step the component explosion, P to toggle particles, Space to pause.</li>
         </ul>
       </div>
     </section>

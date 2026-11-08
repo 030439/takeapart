@@ -7,6 +7,8 @@ export class ModelHandle {
   baseline = new Map<string, { position: Vector3; scale: Vector3 }>();
   /** Increments whenever the set of registered parts really changes. */
   version = 0;
+  /** Set by the pose controller: jump to the assembled pose without animation. */
+  snapAssembled?: () => void;
 
   registerPart(id: string, mesh: Mesh | null): void {
     if (!mesh) {

@@ -1,6 +1,6 @@
 # TakeApart
 
-Hand-gesture controlled 3D exploration platform. Status: **Phase 6 (explode and assemble)**.
+Hand-gesture controlled 3D exploration platform. Status: **Phase 7 (GPU particles)**.
 
 ## Run
 ```bash
@@ -80,9 +80,23 @@ Component explosion, in `src/features/explode-engine`:
 - Parts explode individually. Sub-assemblies do not move as a unit first.
 - In Phase 7 the fist gesture is expected to switch to the particle transformation; the slider, `E` key and two-hand control stay.
 
+## Phase 7 contents
+GPU particle engine in `src/features/particle-engine`:
+- **Rendering:** one `THREE.Points` draw call with a custom `ShaderMaterial` (`shaders/particle.vert.glsl`, `particle.frag.glsl`). three.js runs on WebGL2 and compiles the shaders as GLSL ES 3.00. Motion is a pure function of per-particle attributes and a handful of uniforms, so animating costs one uniform write per frame; buffers are uploaded only when a transition starts.
+- **Per-particle data (typed arrays):** start position, end position, outward velocity, colour and target colour, size, and a random seed (start delay, weight, phase, size jitter). Current position and progress are evaluated in the shader.
+- **Sampling** (`surfaceSampler.ts`, `meshSource.ts`): area-weighted uniform sampling of every triangle of the model in its current pose, vertex colours interpolated, material colours converted to sRGB, seeded by model id so results are deterministic. Samples are ordered along a Morton curve so model-to-model morphs look coherent. Textures are not sampled; textured white materials get a neutral tint.
+- **Effects:** dissolve (model to particles), gather, reconstruct (particles to model, landing exactly on the sampled surface), burst, disperse, attraction (particles are pulled towards the hand's pointing cursor, or the mouse), and transform (change model while in particle state and the particles morph into the new one, colours included).
+- **Controls:** panel buttons, `P` key, toolbar sparkle button, fist (dissolves a solid model, bursts existing particles), open palm or `A` (reconstructs, and assembles the components). `Space` pauses all animation.
+- **Reconstruction** first snaps the hidden components to the assembled pose, so particles gather into the complete model.
+- **Density:** 10k, 50k (default), 100k, 250k. 250k is offered, not promised.
+- **Benchmark:** the panel button runs each density for ~2 s on the current model and reports FPS, average frame time and CPU sampling time. FPS is capped by the display's refresh rate, so rows read the same until the GPU falls behind. Run it on the devices you care about before choosing defaults.
+- **No WebGL2:** the 3D view cannot run, so the workspace shows an explanation instead, and the particle panel says the engine is unavailable. There is no software fallback.
+- The component explosion (slider, `E`, two-hand control) is unchanged but is disabled while particles are shown.
+- Not done: automatic particle-count reduction under load (Phase 9), skinned or morph-target models are sampled in bind pose.
+
 ## Not yet implemented
-WebGL2 particles (7), learning mode (8), optimisation (9).
+learning mode (8), optimisation (9).
 Explode, assemble and particle buttons are deliberately absent until their phases exist.
 shadcn/ui is not installed yet (its CLI needs network); add it when first needed.
 
-Also pending: mouse drag-to-move for individual parts, and the remaining keyboard shortcuts (P, Space).
+Also pending: mouse drag-to-move for individual parts. All suggested keyboard shortcuts (E, A, R, F, P, Space, Escape) are in.
